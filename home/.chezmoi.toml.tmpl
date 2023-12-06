@@ -3,9 +3,29 @@
 {{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
 {{- end -}}
 
+# Prompt if this is a work device
+{{- $work_device := promptBoolOnce . "device.work_device" "Is this a work device" -}}
+
+# Prompt for user details
+{{- $name := promptStringOnce . "user.name" "What is your full name" -}}
+{{- $personal_email := promptStringOnce . "user.personal_email" "What is your personal email address" -}}
+{{- $work_email := "" -}}
+{{- if $work_device }}
+{{-   $work_email = promptStringOnce . "user.work_email" "What is your work email address" -}}
+{{- end -}}
+
 [edit]
 command = "code"
 args = ["--wait"]
 
-[data]
+[data.user]
+name = {{ $name | quote }}
+personal_email = {{ $personal_email | quote }}
+
+{{- if $work_device }}
+work_email = {{ $work_email | quote }}
+{{- end }}
+
+[data.device]
 osid = {{ $osid | quote }}
+work_device = {{ $work_device }}

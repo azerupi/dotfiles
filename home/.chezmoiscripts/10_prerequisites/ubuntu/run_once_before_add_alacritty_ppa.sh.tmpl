@@ -1,4 +1,4 @@
-{{ if and (eq .osid "linux-ubuntu") (eq .chezmoi.osRelease.versionID "22.04") -}}
+{{ if and (eq .device.osid "linux-ubuntu") (eq .chezmoi.osRelease.versionID "22.04") -}}
 
 {{ $sudo := "sudo " -}}
 {{ if eq .chezmoi.username "root" -}}

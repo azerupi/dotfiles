@@ -1,4 +1,4 @@
-{{- if eq .osid "linux-ubuntu" -}}
+{{- if eq .device.osid "linux-ubuntu" -}}
 
 {{ $sudo := "sudo " -}}
 {{ if eq .chezmoi.username "root" -}}
@@ -21,6 +21,7 @@ readonly wanted_packages=(
     shellcheck
     glances
     ripgrep
+    fd-find
 )
 missing_packages=()
 
