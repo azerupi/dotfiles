@@ -1,6 +1,3 @@
-# ripgrep as a modern remplacement to grep
-alias rg="ripgrep"
-
 # fd as a modern remplacement to find
 alias fd="fdfind"
 alias fda="fdfind -I -H"
@@ -9,3 +6,7 @@ alias fda="fdfind -I -H"
 alias ls="eza"
 alias ll="eza -lbhgma --git"
 alias lt='eza --tree --level=2'
+
+# bat as a modern remplacement to cat
+alias cat="batcat -p"
+alias bat="batcat"
