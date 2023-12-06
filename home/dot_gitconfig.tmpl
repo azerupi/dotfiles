@@ -1,0 +1,11 @@
+[user]
+	name = {{ .user.name }}
+	email = {{ .user.personal_email }}
+
+[init]
+	defaultBranch = main
+
+{{ if .device.work_device }}
+[includeIf "gitdir:~/work/"]
+	path = .gitconfig-work
+{{ end }}
