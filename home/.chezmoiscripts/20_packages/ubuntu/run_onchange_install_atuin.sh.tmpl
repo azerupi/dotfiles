@@ -1,0 +1,24 @@
+{{- if eq .osid "linux-ubuntu" -}}
+
+{{ $sudo := "sudo " -}}
+{{ if eq .chezmoi.username "root" -}}
+{{   $sudo = "" -}}
+{{ end -}}
+
+#!/bin/bash
+
+source "{{ .chezmoi.workingTree }}/scripts/utils.sh"
+
+EXECUTABLE="atuin"
+
+if command -v $EXECUTABLE &> /dev/null
+then
+    log_blue "$EXECUTABLE is already installed, skipping install"
+    exit
+fi
+
+log_blue "Installing $EXECUTABLE"
+
+bash <(curl https://raw.githubusercontent.com/atuinsh/atuin/main/install.sh)
+
+{{- end -}}

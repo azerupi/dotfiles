@@ -1,0 +1,16 @@
+{{ if eq .osid "linux-ubuntu" -}}
+
+#!/bin/bash
+
+# This script generates a SSH key for GitHub
+
+source "{{ .chezmoi.workingTree }}/scripts/utils.sh"
+
+ssh-keygen -t ed25519 -C "github" -f ~/.ssh/id_ed25519_github -N ""
+ssh-add ~/.ssh/id_ed25519_github
+
+log_blue "Add the following SSH key to GitHub:"
+cat ~/.ssh/id_ed25519_github.pub
+log_blue "<<<<<<<<<<<<<<<< END OF SSH KEY"
+
+{{ end -}}

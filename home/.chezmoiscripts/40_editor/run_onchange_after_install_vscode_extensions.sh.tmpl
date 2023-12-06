@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# This script installs the VSCode extensions
+
+source "{{ .chezmoi.workingTree }}/scripts/utils.sh"
+
+wanted_extensions=(
+    GitHub.copilot
+    GitHub.copilot-chat
+    GitHub.vscode-pull-request-github
+    ms-vscode-remote.remote-containers
+    ms-vscode-remote.remote-ssh
+    ms-vscode-remote.remote-ssh-edit
+    ms-vscode.cmake-tools
+    ms-vscode.cpptools
+    ms-vscode.cpptools-extension-pack
+    ms-vscode.cpptools-themes
+    ms-vscode.makefile-tools
+    ms-vsliveshare.vsliveshare
+    rust-lang.rust-analyzer
+    tamasfe.even-better-toml
+)
+
+function is_vscode_extension_installed() {
+    local extension="$1"
+
+    code --list-extensions 2>/dev/null | grep "${extension}" >/dev/null
+}
+
+missing_extensions=()
+
+for extension in "${wanted_extensions[@]}"; do
+    if ! is_vscode_extension_installed "${extension}"; then
+        missing_extensions+=("${extension}")
+    fi
+done
+
+
+for extension in "${missing_extensions[@]}"; do
+    log_blue "Installing VSCode extension: ${extension}"
+    code --install-extension "${extension}"
+done

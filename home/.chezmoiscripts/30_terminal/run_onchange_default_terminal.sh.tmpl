@@ -1,0 +1,18 @@
+{{- if eq .osid "linux-ubuntu" -}}
+
+{{ $sudo := "sudo " -}}
+{{ if eq .chezmoi.username "root" -}}
+{{   $sudo = "" -}}
+{{ end -}}
+
+#!/bin/bash
+
+# This script sets the default terminal to use alacritty
+
+source "{{ .chezmoi.workingTree }}/scripts/utils.sh"
+
+log_blue "Setting Alacritty as default terminal"
+
+{{ $sudo }}update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/bin/alacritty 50
+
+{{ end -}}

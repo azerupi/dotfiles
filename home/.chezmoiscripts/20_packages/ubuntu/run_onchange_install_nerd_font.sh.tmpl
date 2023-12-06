@@ -1,0 +1,42 @@
+{{- if eq .osid "linux-ubuntu" -}}
+
+{{ $sudo := "sudo " -}}
+{{ if eq .chezmoi.username "root" -}}
+{{   $sudo = "" -}}
+{{ end -}}
+
+#!/bin/bash
+
+source "{{ .chezmoi.workingTree }}/scripts/utils.sh"
+
+# Choose fonts at: https://www.nerdfonts.com/font-downloads
+
+declare -A wanted_fonts
+
+# The key is the name on nerdfonts.com and the value is the font name as returned by fc-list
+wanted_fonts["FiraCode"]="FiraCode"
+wanted_fonts["DroidSansMono"]="DroidSansM"
+
+missing_fonts=()
+
+for font in "${!wanted_fonts[@]}"; do
+    if ! fc-list | grep "${wanted_fonts[${font}]} Nerd Font" > /dev/null; then
+        missing_fonts+=("${font}")
+    else
+        log_blue "$font already installed"
+    fi
+done
+
+if [[ ${#missing_fonts[@]} -gt 0 ]]; then
+    log_blue "Installing missing Nerd Fonts: ${missing_fonts[*]}"
+
+    for font in "${missing_fonts[@]}"; do
+        wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.0/$font.zip
+        unzip "$font.zip" -d ~/.fonts
+        rm "$font.zip"
+    done
+    
+    fc-cache -fv
+fi
+
+{{ end -}}

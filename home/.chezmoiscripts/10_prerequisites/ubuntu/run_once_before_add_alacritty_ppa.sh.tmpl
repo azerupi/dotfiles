@@ -1,0 +1,26 @@
+{{ if and (eq .osid "linux-ubuntu") (eq .chezmoi.osRelease.versionID "22.04") -}}
+
+{{ $sudo := "sudo " -}}
+{{ if eq .chezmoi.username "root" -}}
+{{   $sudo = "" -}}
+{{ end -}}
+
+#!/bin/bash
+
+# This script adds the apt repository to install alacritty through apt install
+
+source "{{ .chezmoi.workingTree }}/scripts/utils.sh"
+
+EXECUTABLE="alacritty"
+
+if command -v $EXECUTABLE &> /dev/null
+then
+    log_blue "$EXECUTABLE is already installed, skipping adding the apt repository"
+    exit
+fi
+
+log_blue "Adding apt repository for $EXECUTABLE"
+
+{{ $sudo }}add-apt-repository ppa:aslatter/ppa -y
+
+{{ end -}}

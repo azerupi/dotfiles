@@ -1,0 +1,30 @@
+{{- if eq .osid "linux-ubuntu" -}}
+
+#!/bin/bash
+
+# This script installs the packages that are compiled from crates.io
+
+source "{{ .chezmoi.workingTree }}/scripts/utils.sh"
+
+readonly wanted_packages=(
+    zellij          # Terminal multiplexer
+    shellmark       # Shell bookmarks
+    eza             # Maintained fork of exa
+)
+missing_packages=()
+
+for package in "${wanted_packages[@]}"; do
+    if ! command -v "${package}" >/dev/null; then
+        missing_packages+=("${package}")
+    fi
+done
+
+if [[ ${#missing_packages[@]} -gt 0 ]]; then
+    log_blue "Installing missing packages with cargo: ${missing_packages[*]}"
+
+    for package in "${missing_packages[@]}"; do
+        cargo install --locked $package
+    done
+fi
+
+{{- end -}}

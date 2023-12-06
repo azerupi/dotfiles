@@ -1,0 +1,17 @@
+{{- if eq .osid "linux-ubuntu" -}}
+
+{{ $sudo := "sudo " -}}
+{{ if eq .chezmoi.username "root" -}}
+{{   $sudo = "" -}}
+{{ end -}}
+
+#!/bin/bash
+
+# This script sets the default shell to use zsh
+
+source "{{ .chezmoi.workingTree }}/scripts/utils.sh"
+
+log_blue "Changing default shell to ZSH"
+{{ $sudo }}chsh -s $(which zsh)
+
+{{ end -}}

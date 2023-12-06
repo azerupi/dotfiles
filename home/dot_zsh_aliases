@@ -1,0 +1,11 @@
+# ripgrep as a modern remplacement to grep
+alias rg="ripgrep"
+
+# fd as a modern remplacement to find
+alias fd="fdfind"
+alias fda="fdfind -I -H"
+
+# eza as a modern remplacement to ls
+alias ls="eza"
+alias ll="eza -lbhgma --git"
+alias lt='eza --tree --level=2'

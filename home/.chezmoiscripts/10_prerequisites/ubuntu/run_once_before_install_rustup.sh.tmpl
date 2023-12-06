@@ -1,0 +1,26 @@
+{{ if eq .osid "linux-ubuntu" -}}
+
+{{ $sudo := "sudo " -}}
+{{ if eq .chezmoi.username "root" -}}
+{{   $sudo = "" -}}
+{{ end -}}
+
+#!/bin/bash
+
+# This script installs rustup to manage the Rust toolchains
+
+source "{{ .chezmoi.workingTree }}/scripts/utils.sh"
+
+EXECUTABLE="rustup"
+
+if command -v $EXECUTABLE &> /dev/null
+then
+    log_blue "$EXECUTABLE is already installed, skipping install"
+    exit
+fi
+
+log_blue "Installing $EXECUTABLE"
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+{{ end -}}
