@@ -10,3 +10,6 @@ alias lt='eza --tree --level=2'
 # bat as a modern remplacement to cat
 alias cat="batcat -p"
 alias bat="batcat"
+
+# Fuzzy search directory navigation
+alias f='cd $(fd --type directory | fzf)'
