@@ -13,3 +13,6 @@ alias bat="batcat"
 
 # Fuzzy search directory navigation
 alias f='cd $(fd --type directory | fzf)'
+
+# Github copilot cli
+alias ghc="gh copilot suggest"
