@@ -14,7 +14,11 @@ compinit
 # Enable autocompletion based on history
 source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-PATH="$PATH:~/.cargo/bin"
+# Add cargo binaries to the path
+PATH=$PATH:~/.cargo/bin
+
+# Add node binaries to the path
+PATH=$PATH:~/.npm-global/bin
 
 VISUAL='code --wait --new-window'
 EDITOR='vim'
@@ -25,6 +29,7 @@ source ~/.zsh_aliases
 
 # Add fzf completions using **
 source /usr/share/doc/fzf/examples/completion.zsh
+export FZF_DEFAULT_OPTS="--tiebreak=end"
 
 # Add completion for SSH known hosts
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
