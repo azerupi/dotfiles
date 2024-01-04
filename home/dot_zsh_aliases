@@ -16,3 +16,6 @@ alias f='cd $(fd --type directory | fzf)'
 
 # Github copilot cli
 alias ghc="gh copilot suggest"
+
+# Open current directory with explorer
+alias dopen="xdg-open ."
