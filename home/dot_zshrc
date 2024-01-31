@@ -46,5 +46,11 @@ eval "$(starship init zsh)"
 # Adding atuin for fuzzy searching command history
 eval "$(atuin init zsh)"
 
+# Source ROS2 setup
+if [ -f "/opt/ros/iron/setup.zsh" ]; then
+    source /opt/ros/iron/setup.zsh
+fi
+
+
 # Add syntax highlighting to ZSH, this needs to be the last line
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
