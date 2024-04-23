@@ -83,11 +83,9 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 # switch group using `<` and `>`
 zstyle ':fzf-tab:*' switch-group '<' '>'
 
-# Add cargo binaries to the path
-PATH=$PATH:~/.cargo/bin
-
-# Add node binaries to the path
-PATH=$PATH:~/.npm-global/bin
+PATH=~/.local/bin:$PATH         # User binaries
+PATH=$PATH:~/.cargo/bin         # Rust binaries
+PATH=$PATH:~/.npm-global/bin    # NPM binaries
 
 VISUAL='code --wait --new-window'
 EDITOR='vim'
