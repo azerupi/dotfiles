@@ -83,10 +83,6 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 # switch group using `<` and `>`
 zstyle ':fzf-tab:*' switch-group '<' '>'
 
-PATH=~/.local/bin:$PATH         # User binaries
-PATH=$PATH:~/.cargo/bin         # Rust binaries
-PATH=$PATH:~/.npm-global/bin    # NPM binaries
-
 VISUAL='code --wait --new-window'
 EDITOR='vim'
 

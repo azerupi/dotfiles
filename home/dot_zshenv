@@ -1,2 +1,6 @@
+PATH=~/.local/bin:$PATH      # User binaries
+PATH=$PATH:~/.cargo/bin      # Rust binaries
+PATH=$PATH:~/.npm-global/bin # NPM binaries
+
 # FZF completions
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
