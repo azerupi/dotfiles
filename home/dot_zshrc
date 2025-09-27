@@ -4,7 +4,11 @@ source "${HOME}/.zgenom/zgenom.zsh"
 zgenom autoupdate
 
 source ~/.zsh_aliases
-source ~/.zsh_extra
+
+# .zsh_extra is a file that is not synced with chezmoi, if it exists source it
+if [[ -f ~/.zsh_extra ]]; then
+    source ~/.zsh_extra
+fi
 
 # if the init script doesn't exist
 if ! zgenom saved; then

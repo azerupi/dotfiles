@@ -1,6 +1,9 @@
 # fd as a modern remplacement to find
-alias fd='fdfind'
-alias fda='fdfind -I -H'
+# If the find binary is called fdfind (as on Debian/Ubuntu), alias fd to fdfind
+if command -v fdfind &> /dev/null; then
+    alias fd='fdfind'
+fi
+alias fda='fd -I -H'
 
 # ripgrep
 alias rga='rg -. --no-ignore'
@@ -9,6 +12,9 @@ alias rga='rg -. --no-ignore'
 alias ls='eza'
 alias ll='eza -lbhgma --git'
 alias lt='eza --tree --level=2'
+
+# numbat
+alias nb='numbat'
 
 # bat as a modern remplacement to cat
 # If the bat binary is called batcat (as on Debian/Ubuntu), alias bat to batcat

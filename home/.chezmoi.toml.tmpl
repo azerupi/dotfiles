@@ -18,6 +18,18 @@
 command = "code"
 args = ["--wait"]
 
+[merge]
+command = "bash"
+args = [
+    "-c",
+    'cp {{ printf "%q" "{{ .Target }}" }} {{ printf "%q" "{{ .Target }}" }}.base && code --new-window --wait --merge {{ printf "%q" "{{ .Destination }}" }} {{ printf "%q" "{{ .Target }}" }} {{ printf "%q" "{{ .Target }}" }}.base {{ printf "%q" "{{ .Source }}" }}',
+]
+
+
+[diff]
+pager = "delta"
+
+
 [data.user]
 name = {{ $name | quote }}
 personal_email = {{ $personal_email | quote }}
