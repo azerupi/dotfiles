@@ -42,7 +42,7 @@ style = "Regular"
 save_to_clipboard = true
 
 [shell]
-args = ["-l", "-c", "{{ .chezmoi.homeDir }}/.config/zellij/zellij-new-or-attach.sh"]
+args = ["-l", "-c", "zellij"]
 program = "/usr/bin/zsh"
 
 [window]

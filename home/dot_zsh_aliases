@@ -1,21 +1,34 @@
 # fd as a modern remplacement to find
-alias fd="fdfind"
-alias fda="fdfind -I -H"
+alias fd='fdfind'
+alias fda='fdfind -I -H'
+
+# ripgrep
+alias rga='rg -. --no-ignore'
 
 # eza as a modern remplacement to ls
-alias ls="eza"
-alias ll="eza -lbhgma --git"
+alias ls='eza'
+alias ll='eza -lbhgma --git'
 alias lt='eza --tree --level=2'
 
 # bat as a modern remplacement to cat
-alias cat="batcat -p"
-alias bat="batcat"
+# If the bat binary is called batcat (as on Debian/Ubuntu), alias bat to batcat
+if command -v batcat &> /dev/null; then
+    alias bat='batcat'
+fi
+alias cat='bat -p'
 
 # Fuzzy search directory navigation
 alias f='cd $(fd --type directory | fzf)'
 
-# Github copilot cli
-alias ghc="gh copilot suggest"
-
 # Open current directory with explorer
 alias dopen="xdg-open ."
+
+# Add a function to transform typst equations to a png and copy it to the clipboard
+function typstclip() { \
+    input="$1"; \
+    tmpfile=$(mktemp /tmp/equationXXXX.typ); \
+    echo "#set page(width: auto, height: auto, margin: 1mm);$ $input $" > "$tmpfile"; \
+    typst compile -f png "$tmpfile" /tmp/equation.png; \
+    xclip -selection clipboard -t image/png -i /tmp/equation.png; \
+    rm "$tmpfile" /tmp/equation.png; \
+}

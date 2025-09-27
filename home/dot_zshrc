@@ -3,6 +3,9 @@ source "${HOME}/.zgenom/zgenom.zsh"
 
 zgenom autoupdate
 
+source ~/.zsh_aliases
+source ~/.zsh_extra
+
 # if the init script doesn't exist
 if ! zgenom saved; then
 
@@ -16,6 +19,9 @@ if ! zgenom saved; then
     zgenom load zsh-users/zsh-syntax-highlighting
 
     zgenom load Aloxaf/fzf-tab
+
+    # Load .envrc files from current directory
+    zgenom ohmyzsh plugins/direnv
 
     # save all to init script
     zgenom save
@@ -88,27 +94,18 @@ EDITOR='vim'
 
 export VISUAL EDITOR
 
-source ~/.zsh_aliases
-source ~/.zsh_extra
-
 # Add completion for SSH known hosts
 zstyle -e ':completion:*:(ssh|scp|sftp|rsh|rsync):hosts' hosts 'reply=(${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) /dev/null)"}%%[# ]*}//,/ })'
 
 # Add yazi shell wrapper allowing cd functionality
-function yy() {
-    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
-    yazi "$@" --cwd-file="$tmp" $(pwd)
-    if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-        cd -- "$cwd"
+function y() {
+    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    yazi "$@" --cwd-file="$tmp"
+    if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+        builtin cd -- "$cwd"
     fi
     rm -f -- "$tmp"
 }
-
-# Add `s` alias for shellmark allowing quickly
-# adding and fuzzy searching bookmarks
-if type shellmark &>/dev/null; then
-    eval "$(shellmark --out posix plug)"
-fi
 
 # Adding starship prompt for easy and customized shell prompt
 eval "$(starship init zsh)"
@@ -118,3 +115,4 @@ eval "$(atuin init zsh)"
 
 # zoxide
 eval "$(zoxide init zsh)"
+

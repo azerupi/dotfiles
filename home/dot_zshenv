@@ -1,5 +1,5 @@
 PATH=~/.local/bin:$PATH      # User binaries
-PATH=$PATH:~/.cargo/bin      # Rust binaries
+PATH=~/.cargo/bin:$PATH      # Rust binaries
 PATH=$PATH:~/.npm-global/bin # NPM binaries
 
 # FZF completions

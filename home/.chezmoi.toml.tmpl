@@ -3,10 +3,10 @@
 {{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
 {{- end -}}
 
-# Prompt if this is a work device
+{{- /*Prompt if this is a work device */ -}}
 {{- $work_device := promptBoolOnce . "device.work_device" "Is this a work device" -}}
 
-# Prompt for user details
+{{- /* Prompt for user details */ -}}
 {{- $name := promptStringOnce . "user.name" "What is your full name" -}}
 {{- $personal_email := promptStringOnce . "user.personal_email" "What is your personal email address" -}}
 {{- $work_email := "" -}}
