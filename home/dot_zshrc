@@ -59,8 +59,34 @@ export HISTSIZE=100000
 export SAVEHIST=100000
 HISTFILE=~/.zsh_history
 
-# Use emacs keybindings even if our EDITOR is set to vi
+# Use emacs-style keys by default (or use -v for vi mode)
 bindkey -e
+
+# Load terminfo so we can bind using portable names
+zmodload zsh/terminfo
+
+# Helper to safely bind if the terminfo key exists
+bind_if_present() {
+  local key="$1" widget="$2"
+  [[ -n "$key" ]] && bindkey "$key" "$widget"
+}
+
+# Core keys
+bind_if_present "${terminfo[kdch1]}" delete-char            # Delete
+bind_if_present "${terminfo[khome]}" beginning-of-line      # Home
+bind_if_present "${terminfo[kend]}"  end-of-line            # End
+bind_if_present "${terminfo[kich1]}" overwrite-mode         # Insert
+
+# Arrows (usually already work, but ensure anyway)
+bind_if_present "${terminfo[kcuu1]}" up-line-or-history
+bind_if_present "${terminfo[kcud1]}" down-line-or-history
+bind_if_present "${terminfo[kcub1]}" backward-char
+bind_if_present "${terminfo[kcuf1]}" forward-char
+
+# Common fallbacks (some terminals send these)
+bindkey '\e[H'  beginning-of-line
+bindkey '\e[F'  end-of-line
+bindkey '\e[3~' delete-char
 
 # Add some completions settings
 setopt ALWAYS_TO_END    # Move cursor to the end of a completed word.
