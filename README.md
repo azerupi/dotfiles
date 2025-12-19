@@ -5,7 +5,8 @@ My dotfiles and setup scripts managed by [chezmoi](https://www.chezmoi.io/).
 ## Install
 ### Supported platforms
 
-- [x] Ubuntu (22.04)
+- [x] Ubuntu 24.04
+- [x] Arch Linux
 
 ### Installing a new machine
 
@@ -14,6 +15,10 @@ Install chezmoi first and then run
 ```sh
 chezmoi init azerupi
 ```
+
+### Packages
+
+Packages are installed declaratively from `home/.chezmoidata/packages.yaml` using apt (Ubuntu), pacman/AUR (Arch) and cargo. Edit that file to tweak what gets installed on each platform.
 
 ## Overview
 

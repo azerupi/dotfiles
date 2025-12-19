@@ -1,0 +1,121 @@
+{{- if and (hasKey .packages "linux-ubuntu") (eq .device.osid "linux-ubuntu") -}}
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Install Ubuntu packages declared in home/.chezmoidata/packages.yaml.
+# Supports apt (and optional PPAs), snap, and cargo. Update package lists
+# only through the YAML to keep logic here stable and readable.
+
+source "{{ .chezmoi.workingTree }}/scripts/utils.sh"
+
+{{ $sudo := "sudo " -}}
+{{ if eq .chezmoi.username "root" -}}
+{{   $sudo = "" -}}
+{{ end -}}
+
+load_cargo_env() {
+  if [[ -f "$HOME/.cargo/env" ]]; then
+    . "$HOME/.cargo/env"
+  fi
+}
+
+load_cargo_env
+
+{{- $ubuntu := index .packages "linux-ubuntu" }}
+apt_packages=({{ range (default (list) $ubuntu.apt) }}{{ . | quote }} {{ end }})
+snap_packages=({{ range (default (list) $ubuntu.snap) }}{{ . | quote }} {{ end }})
+cargo_packages=({{ range (default (list) $ubuntu.cargo) }}{{ . | quote }} {{ end }})
+ppas=({{ range (default (list) $ubuntu.ppa) }}{{ . | quote }} {{ end }})
+
+install_ppas() {
+  [[ ${#ppas[@]} -eq 0 ]] && return
+
+  if ! command -v add-apt-repository >/dev/null 2>&1; then
+    log_yellow "software-properties-common missing; skipping PPAs."
+    return
+  fi
+
+  local added_any=false
+  for ppa in "${ppas[@]}"; do
+    # Check if PPA is already in sources
+    if ! grep -q "^deb.*$ppa" /etc/apt/sources.list /etc/apt/sources.list.d/* 2>/dev/null; then
+      log_blue "Adding PPA: $ppa"
+      {{ $sudo }}add-apt-repository -y "$ppa"
+      added_any=true
+    fi
+  done
+  
+  # Trigger update immediately if a PPA was added
+  [[ "$added_any" == true ]] && {{ $sudo }}apt-get update
+}
+
+install_apt() {
+  [[ ${#apt_packages[@]} -eq 0 ]] && return
+
+  local missing=()
+  for pkg in "${apt_packages[@]}"; do
+    if ! dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null | grep -q "ok installed"; then
+      missing+=("$pkg")
+    fi
+  done
+
+  [[ ${#missing[@]} -eq 0 ]] && { log_blue "All apt packages installed"; return; }
+
+  log_blue "Installing missing apt packages..."
+  {{ $sudo }}apt-get update
+  {{ $sudo }}DEBIAN_FRONTEND=noninteractive apt-get install -y "${missing[@]}"
+}
+
+setup_rustup() {
+  if command -v rustup >/dev/null 2>&1 && ! command -v cargo >/dev/null 2>&1; then
+    log_blue "Initializing Rustup stable toolchain..."
+    rustup default stable
+    load_cargo_env
+  fi
+}
+
+install_snap() {
+  [[ ${#snap_packages[@]} -eq 0 ]] && return
+  command -v snap >/dev/null 2>&1 || { log_yellow "snap not found; skipping"; return; }
+
+  for pkg in "${snap_packages[@]}"; do
+    if ! snap list "$pkg" >/dev/null 2>&1; then
+      log_blue "Probing snap confinement for: $pkg"
+      
+      # Query the snap store for the confinement type
+      local confinement
+      confinement=$(snap info "$pkg" 2>/dev/null | grep "^confinement:" | awk '{print $2}')
+
+      if [[ "$confinement" == "classic" ]]; then
+        log_blue "Installing $pkg with --classic"
+        {{ $sudo }}snap install --classic "$pkg"
+      else
+        log_blue "Installing $pkg (strict)"
+        {{ $sudo }}snap install "$pkg"
+      fi
+    fi
+  done
+}
+
+install_cargo() {
+  [[ ${#cargo_packages[@]} -eq 0 ]] && return
+  command -v cargo >/dev/null 2>&1 || { log_yellow "cargo missing; skipping"; return; }
+
+  local installed_bins
+  installed_bins=$(cargo install --list | awk '{print $1}')
+
+  for pkg in "${cargo_packages[@]}"; do
+    if ! echo "$installed_bins" | grep -Fxq "$pkg"; then
+      log_blue "Installing cargo package: $pkg"
+      cargo install --locked "$pkg"
+    fi
+  done
+}
+
+install_ppas
+install_apt
+install_snap
+setup_rustup
+install_cargo
+
+{{- end }}

@@ -1,0 +1,82 @@
+{{- if and (hasKey .packages "linux-arch") (eq .device.osid "linux-arch") -}}
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Install Arch packages declared in home/.chezmoidata/packages.yaml.
+# Covers pacman (official repos), AUR (via paru/yay) and cargo installs.
+# Adjust package lists in the YAML; keep logic here minimal and readable.
+
+source "{{ .chezmoi.workingTree }}/scripts/utils.sh"
+
+{{ $sudo := "sudo " -}}
+{{ if eq .chezmoi.username "root" -}}
+{{   $sudo = "" -}}
+{{ end -}}
+
+# Function to refresh cargo environment
+load_cargo_env() {
+  if [[ -f "$HOME/.cargo/env" ]]; then
+    . "$HOME/.cargo/env"
+  fi
+}
+
+load_cargo_env
+
+{{- $arch := index .packages "linux-arch" }}
+pacman_packages=({{ range $arch.pacman }}{{ . | quote }} {{ end }})
+aur_packages=({{ range $arch.aur }}{{ . | quote }} {{ end }})
+cargo_packages=({{ range $arch.cargo }}{{ . | quote }} {{ end }})
+
+install_pacman() {
+  [[ ${#pacman_packages[@]} -eq 0 ]] && return
+  log_blue "Syncing pacman packages..."
+  {{ $sudo }}pacman -Syu --needed --noconfirm "${pacman_packages[@]}"
+}
+
+install_aur() {
+  [[ ${#aur_packages[@]} -eq 0 ]] && return
+  local helper
+  if command -v paru >/dev/null 2>&1; then helper="paru"
+  elif command -v yay >/dev/null 2>&1; then helper="yay"
+  else
+    log_yellow "No AUR helper found (expecting paru or yay); skipping AUR packages."
+    return
+  fi
+  log_blue "Installing AUR packages with $helper..."
+  {{ $sudo }}"$helper" -S --needed --noconfirm "${aur_packages[@]}"
+}
+
+setup_rustup() {
+  # If rustup is installed but cargo isn't working yet
+  if command -v rustup >/dev/null 2>&1 && ! command -v cargo >/dev/null 2>&1; then
+    log_blue "Initializing rustup stable toolchain..."
+    rustup default stable
+    load_cargo_env
+  fi
+}
+
+install_cargo() {
+  [[ ${#cargo_packages[@]} -eq 0 ]] && return
+
+  if ! command -v cargo >/dev/null 2>&1; then
+    log_yellow "cargo not found; skipping cargo packages."
+    return
+  fi
+
+  local installed_bins
+  installed_bins=$(cargo install --list | awk '{print $1}')
+
+  for pkg in "${cargo_packages[@]}"; do
+    if ! echo "$installed_bins" | grep -Fxq "$pkg"; then
+      log_blue "Installing cargo package: $pkg"
+      cargo install --locked "$pkg"
+    fi
+  done
+}
+
+install_pacman
+install_aur
+setup_rustup
+install_cargo
+
+{{- end }}

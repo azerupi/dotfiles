@@ -1,16 +1,27 @@
 {{ if eq .device.osid "linux-ubuntu" -}}
-
 #!/bin/bash
 
 # This script generates a SSH key for GitHub
 
+# Exit if the key already exists
+if [ -f "$HOME/.ssh/id_ed25519_github" ]; then
+    exit 0
+fi
+
 source "{{ .chezmoi.workingTree }}/scripts/utils.sh"
 
+# Ensure the .ssh directory exists with correct permissions
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+
+log_blue "Generating new SSH key for GitHub..."
 ssh-keygen -t ed25519 -C "github" -f ~/.ssh/id_ed25519_github -N ""
+
+# Start the agent and add the key (optional, but helpful for immediate use)
+eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519_github
 
 log_blue "Add the following SSH key to GitHub:"
 cat ~/.ssh/id_ed25519_github.pub
 log_blue "<<<<<<<<<<<<<<<< END OF SSH KEY"
-
 {{ end -}}

@@ -1,3 +1,12 @@
+if [[ -n "$CONTAINER_ID" ]]; then
+    export ZSH_ENV_ID="-${CONTAINER_ID}"
+else
+    export ZSH_ENV_ID=""
+fi
+
+export ZGEN_INIT="$HOME/.zgenom/init${ZSH_ENV_ID}.zsh"
+export ZCOMPDUMP="$HOME/.zcompdump${ZSH_ENV_ID}"
+
 # load zgenom
 source "${HOME}/.zgenom/zgenom.zsh"
 
@@ -19,6 +28,8 @@ if ! zgenom saved; then
     # Extra completions
     zgenom load zsh-users/zsh-completions
 
+    zgenom load marlonrichert/zsh-autocomplete
+
     # Enable shell syntax highlighting
     zgenom load zsh-users/zsh-syntax-highlighting
 
@@ -27,11 +38,12 @@ if ! zgenom saved; then
     # Load .envrc files from current directory
     zgenom ohmyzsh plugins/direnv
 
+    # Initialize completions
+    autoload -Uz compinit
+    compinit -d "$ZCOMPDUMP"
+
     # save all to init script
     zgenom save
-
-    # Compile your zsh files
-    zgenom compile "$HOME/.zshrc"
 fi
 
 # Check for plugin and zgenom updates every 7 days

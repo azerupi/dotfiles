@@ -7,7 +7,7 @@ add_newline = true
 
 format = """
 [╭─](fg:#777777)[](#9A348E)\
-$username\
+$os\
 [](bg:#33658A fg:#9A348E)\
 $directory\
 [](fg:#33658A bg:#AA3333)\
@@ -31,6 +31,14 @@ $cmd_duration\
 [](#33658A)
 [╰─ ](fg:#777777)
 """
+
+[os]
+disabled = false
+style = "bg:#9A348E"
+
+[os.symbols]
+Arch = " "
+Ubuntu = " "
 
 # You can also replace your username with a neat symbol like  to save some space
 [username]
@@ -124,7 +132,7 @@ format = '[ $symbol ($version) ]($style)'
 
 [time]
 disabled = false
-time_format = "%R" # Hour:Minute Format
+time_format = "%R"             # Hour:Minute Format
 style = "bg:#33658A"
 format = '[ ♥ $time ]($style)'
 

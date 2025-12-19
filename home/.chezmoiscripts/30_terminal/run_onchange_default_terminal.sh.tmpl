@@ -9,6 +9,11 @@
 
 # This script sets the default terminal to use alacritty
 
+# Exit if running inside a Distrobox container
+if [ -n "${CONTAINER_ID:-}" ]; then
+  exit 0
+fi
+
 source "{{ .chezmoi.workingTree }}/scripts/utils.sh"
 
 log_blue "Setting Alacritty as default terminal"

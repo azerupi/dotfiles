@@ -1,0 +1,73 @@
+packages:
+  linux-arch:
+    pacman:
+      - alacritty
+      - atuin
+      - base-devel
+      - bat
+      - curl
+      - direnv
+      - eza
+      - fd
+      - fzf
+      - git
+      - git-delta
+      - glances
+      - just
+      - networkmanager-openvpn
+      - openvpn
+      - python-pip
+      - ripgrep
+      - rustup
+      - starship
+      - wget
+      - yazi
+      - zellij
+      - zoxide
+      - zsh
+      - zsh-autocomplete
+      - zsh-autosuggestions
+      - zsh-completions
+      - zsh-syntax-highlighting
+
+    aur:
+      - numbat
+
+    cargo:
+
+  linux-ubuntu:
+    apt:
+      - bat
+      - build-essential
+      - curl
+      - direnv
+      - fd-find
+      - fzf
+      - git
+      - glances
+      - network-manager-openvpn
+      - network-manager-openvpn-gnome
+      - openvpn
+      - python3-pip
+      - ripgrep
+      - rustup
+      - ubuntu-restricted-extras
+      - wget
+      - zsh
+      - zsh-autosuggestions
+      - zsh-common
+      - zsh-syntax-highlighting
+
+    snap:
+      - alacritty
+
+    cargo:
+      - atuin
+      - eza # Is available via apt but outdated
+      - git-delta
+      - just
+      - numbat-cli
+      - starship
+      - yazi-build
+      - zellij
+      - zoxide
