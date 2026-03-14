@@ -47,6 +47,9 @@
     line-numbers-left-style = blue
     line-numbers-right-style = blue
 
+[include]
+	path = .gitconfig-local
+
 {{ if .device.work_device }}
 [includeIf "gitdir:~/work/"]
 	path = .gitconfig-work
